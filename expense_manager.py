@@ -48,6 +48,60 @@ def add_transaction():
     save_transactions(transactions)
     print("Transaction added successfully!")
 
+
+# View transaction function allowing the user to filter transactions with given date range and category
+def view_transactions():
+
+    # Load existing transactions
+    transactions = load_transactions() 
+
+    # Print if no transaction is found
+    if not transactions:
+        print("No transactions found.")
+        return
+
+    # get user input 
+    filtered_start_date = input("Enter the starting date range (YYYY-MM-DD): ") 
+    filtered_end_date = input("Enter the ending date range (YYYY-MM-DD): ")
+    filtered_category = input("Enter the category to filter (leave blank to skip): ")
+
+    #converting given date range to datetime so it can be compared to the transaction date
+    try:
+        filtered_start_date = datetime.strptime(filtered_start_date, "%Y-%m-%d")
+        filtered_end_date = datetime.strptime(filtered_end_date, "%Y-%m-%d")
+    except ValueError:
+        print("Please enter Data using the format YYYY-MM-DD")
+        return
+
+    filtered_transactions = []  # List to store filtered transactions
+    for transaction in transactions:
+
+        #converting transaction date to datetime so it can be compared to the given date range
+        try: 
+            transaction_date = datetime.strptime(transaction["date"], "%Y-%m-%d")
+        except ValueError:
+            print("Invalid date format in transaction data.")
+            return
+        
+        #applying the filter
+        if filtered_start_date <= transaction_date <= filtered_end_date: # Check if the transaction date is in the user input range
+            if not filtered_category or transaction["category"].strip().lower() == filtered_category.lower(): # Check if the category matches the user input
+                filtered_transactions.append(transaction) # Add the transaction to the filtered list 
+
+    # print if the filter doesn't reutn any matches
+    if not filtered_transactions:
+        print("No transacitons found in the given filter.")
+        return
+    
+    # print "table"
+    print("\nFiltered Transactions")
+    print("ID | Name | Amount | Date | Category")
+    print("-" * 50) # hard coded break
+
+    for transaction in filtered_transactions:
+        print(f"{transaction['id']} | {transaction['name']} | {transaction['amount']} | {transaction['date']} | {transaction['category']}")
+
+
 # Main menu loop
 def main():
     """Main menu for the Expense Manager application."""
@@ -66,7 +120,7 @@ def main():
         if choice == "1":
             add_transaction()
         elif choice == "2":
-            print("Feature not implemented yet: View Transactions")
+            view_transactions()
         elif choice == "3":
             print("Feature not implemented yet: Modify Transaction")
         elif choice == "4":

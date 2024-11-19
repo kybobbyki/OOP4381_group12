@@ -12,5 +12,26 @@
         "amount": 500.0,
         "date": "2020-06-22",
         "category": "GYM"
+    },
+    {
+        "id": 3,
+        "name": "Food",
+        "amount": 23.0,
+        "date": "2024-11-19",
+        "category": "Food"
+    },
+    {
+        "id": 4,
+        "name": "Fortnite Battle Pass",
+        "amount": 19.0,
+        "date": "2024-10-24",
+        "category": "entertainment"
+    },
+    {
+        "id": 5,
+        "name": "stock purchase ",
+        "amount": 150.0,
+        "date": "1980-06-04",
+        "category": "investing"
     }
 ]
