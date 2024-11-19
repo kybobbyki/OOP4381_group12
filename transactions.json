@@ -33,5 +33,12 @@
         "amount": 150.0,
         "date": "1980-06-04",
         "category": "investing"
+    },
+    {
+        "id": 6,
+        "name": "Rent",
+        "amount": 1700.0,
+        "date": "2024-11-19",
+        "category": "Housing"
     }
 ]
