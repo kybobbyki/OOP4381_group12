@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Ali",
+        "amount": 50.0,
+        "date": "2024-06-20",
+        "category": "FOOD"
+    },
+    {
+        "id": 2,
+        "name": "TOM ",
+        "amount": 500.0,
+        "date": "2020-06-22",
+        "category": "GYM"
+    }
+]
