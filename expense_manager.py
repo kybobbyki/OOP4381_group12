@@ -19,6 +19,34 @@ def save_transactions(transactions):
     with open(TRANSACTION_FILE, "w") as file:
         json.dump(transactions, file, indent=4)
 
+class Transaction:
+    def __init__(self, transaction_id, name, amount, date, category):
+        self.transaction_id = transaction_id
+        self.name = name
+        self.amount = amount 
+        self.date = date
+        self.category = category
+    def display(self):
+        return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}"
+
+class FoodTransaction(Transaction):
+    def __init__(self, transaction_id, name, amount, date, category, meal_type, location):
+        super().__init(transaction_id, name, amount, date, category)
+        self.meal_type = meal_type
+        self.location = location
+    def display(self):
+        return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}, Meal Type: {self.meal_type}, Location: {self.location}"
+class UtilityTransaction(Transaction):
+    def __init__(self, transaction_id, name, amount, date, category, utility_type, provider):
+        super().__init__(transaction_id, name, amount, date, category)
+        self.utility_type = utility_type
+        self.provider = provider 
+    def display(self):
+        return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}, Utility Type: {self.utility_type}, Provider: {self.provider}"
+
+
+
+
 # Add a new transaction
 def add_transaction():
     """Prompts the user to add a new transaction and saves it."""
