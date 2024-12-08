@@ -190,7 +190,86 @@ def modify_transaction():
             save_transactions(transactions)
             print("Transaction updated")
             return
-                                                        
+        
+# View Statistics function
+
+def display_statistics():
+
+    transactions = load_transactions()
+
+    if not transactions:
+        print("No transactions found.")
+        return 
+    
+# Filter transactions by date range
+    start_date = input("Enter the starting date range (YYYY-MM-DD): ")
+    end_date = input("Enter the ending date range (YYYY-MM-DD): ")
+    
+    try:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d")
+        end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError:
+        print("Please enter date using the format YYYY-MM-DD")
+        return
+
+# filter transactions by date
+    filtered_transactions = [t for t in transactions if start_date <= datetime.strptime(t["date"], "%Y-%m-%d") <= end_date]
+
+    if not filtered_transactions:
+        print("No transactions found in the given date range.")
+        return
+
+# group transactions by category
+    category_groups = {}
+    for transaction in filtered_transactions:
+        category = transaction["category"].strip().lower() # normalizing catergories to lowercase
+        if category not in category_groups:
+            category_groups[category] = []
+        category_groups[category].append(transaction)
+
+# displaying statistics for each category 
+    print("-" * 50)
+    print("\nStatistics by Category:")
+
+    # calculations fot each category
+    for category, transactions in category_groups.items():
+        try:
+            # total amount per catergory
+            total_amount = sum(t["amount"] for t in transactions)
+            # average amount per category
+            average_amount = total_amount / len(transactions)
+            # highest cost transaction
+            max_amount = max(t["amount"] for t in transactions)
+            # lowest cost transaction
+            min_amount = min(t["amount"] for t in transactions)
+
+            print(f"\nCatergory: {category}")
+            print(f"Total Amount: {total_amount}")
+            print(f"Average Amount: {average_amount}")
+            print(f"Highest Cost Transaction: {max_amount}")
+            print(f"Lowest Cost Transaction: {min_amount}")
+
+            # in case there are no transactions in the category
+        except ZeroDivisionError:
+            print(f"\nCatergory: {category}")
+            print("No transactions found for this category.")
+
+    # overall statistics
+    print("-" * 50)
+    print("\nOverall Statistics:")
+
+    # calculations fot overall
+    total_spent = sum(t["amount"] for t in filtered_transactions)
+    avg_daily_spent = total_spent / ((end_date - start_date).days + 1)
+    max_transaction = max(filtered_transactions, key=lambda t: t["amount"])
+    min_transaction = min(filtered_transactions, key=lambda t: t["amount"])
+    
+    # displaying the stats, rounded to 2 decimal places for dollar amouint. 
+    print(f"  Total spent: ${total_spent:.2f}")
+    print(f"  Average daily spent: ${avg_daily_spent:.2f}")
+    print(f"  Highest cost transaction: {max_transaction['name']} (${max_transaction['amount']:.2f})")
+    print(f"  Lowest cost transaction: {min_transaction['name']} (${min_transaction['amount']:.2f})")
+
 # Main menu loop
 def main():
     """Main menu for the Expense Manager application."""
@@ -211,9 +290,9 @@ def main():
         elif choice == "2":
             view_transactions()
         elif choice == "3":
-            print("Feature not implemented yet: Modify Transaction")
+            modify_transaction()
         elif choice == "4":
-            print("Feature not implemented yet: Display Statistics")
+            display_statistics()
         elif choice == "5":
             print("Exiting program. Goodbye!")
             break
