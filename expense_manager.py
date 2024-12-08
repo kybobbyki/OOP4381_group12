@@ -19,6 +19,7 @@ def save_transactions(transactions):
     with open(TRANSACTION_FILE, "w") as file:
         json.dump(transactions, file, indent=4)
 
+# Transaction class which stores attributes related to the transaction and has methods which enable information modification
 class Transaction:
     def __init__(self, transaction_id, name, amount, date, category):
         self.transaction_id = transaction_id
@@ -27,21 +28,27 @@ class Transaction:
         self.date = date
         self.category = category
     def display(self):
+        #returns a string with all the transaction details 
         return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}"
 
+# Food transaction inherites attributes from the Transaction class and adds attributes specific to food transactions 
 class FoodTransaction(Transaction):
     def __init__(self, transaction_id, name, amount, date, category, meal_type, location):
         super().__init(transaction_id, name, amount, date, category)
         self.meal_type = meal_type
         self.location = location
     def display(self):
+        #returns a string with all the transaction details 
         return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}, Meal Type: {self.meal_type}, Location: {self.location}"
+
+# Utility transaction inherites attributes from the Transaction class and adds attributes specific to utility transactions 
 class UtilityTransaction(Transaction):
     def __init__(self, transaction_id, name, amount, date, category, utility_type, provider):
         super().__init__(transaction_id, name, amount, date, category)
         self.utility_type = utility_type
         self.provider = provider 
     def display(self):
+        #returns a string with all the transaction details
         return f"ID: {self.transaction_id}, Name: {self.name}, Amount: {self.amount}, Date: {self.date}, Category: {self.category}, Utility Type: {self.utility_type}, Provider: {self.provider}"
 
 
@@ -116,7 +123,7 @@ def view_transactions():
             if not filtered_category or transaction["category"].strip().lower() == filtered_category.lower(): # Check if the category matches the user input
                 filtered_transactions.append(transaction) # Add the transaction to the filtered list 
 
-    # print if the filter doesn't reutn any matches
+    # print if the filter doesn't return any matches
     if not filtered_transactions:
         print("No transacitons found in the given filter.")
         return
@@ -129,7 +136,61 @@ def view_transactions():
     for transaction in filtered_transactions:
         print(f"{transaction['id']} | {transaction['name']} | {transaction['amount']} | {transaction['date']} | {transaction['category']}")
 
+# Allows the user to modify transaction
+def modify_transaction(): 
+     # Load existing transactions
+    transactions = load_transactions() 
 
+    # Print if no transaction is found
+    if not transactions:
+        print("No transactions found.")
+        return
+    #get user input
+    date = input("Enter the transaction date to modify (YYYY-MM-D): ")
+    category = input("Enter the category of the transaction to modify: ")
+
+    filtered_transactions = [ t for t in transactions if t["date"] == date and t["category"].strip().lower() == category.lower()]
+                             
+    # print if the filter doesn't return any matches
+    if not filtered_transactions:
+        print("No transacitons found in the given filter.")
+        return    
+    # print "table"
+    print("\nMatching Transactions")
+    print("ID | Name | Amount | Date | Category")
+    print("-" * 50) # hard coded break
+
+    for transaction in filtered_transactions:
+        print(f"{transaction['id']} | {transaction['name']} | {transaction['amount']} | {transaction['date']} | {transaction['category']}")
+   
+    try:
+        transaction_id = int(input("Enter the ID of the transaction you would like to modify: "))
+    except ValueError:
+        print("Invalid ID entered.")
+
+    
+    for transaction in transactions:
+        if transaction["id"] == transaction_id:
+            new_name = input(f"Enter new name ({transaction['name']}): ") or transaction['name']
+            try:
+                new_amount = input(f"Enter new amount ({transaction['amount']}): ")
+                new_amount = float(new_amount) if new_amount else transaction['amount']
+            except ValueError:
+                print("Invalid amount entered.")
+                return
+            new_date = input(f"Enter new date ({transaction['date']}): ") or transaction['date']
+            new_category = input(f"Enter new category ({transaction['category']}): ") or transaction['category']
+    
+            transaction.update({
+                "name": new_name,
+                "amount": new_amount,
+                "date": new_date,
+                "category": new_category
+            })
+            save_transactions(transactions)
+            print("Transaction updated")
+            return
+                                                        
 # Main menu loop
 def main():
     """Main menu for the Expense Manager application."""
